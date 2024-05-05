@@ -1,4 +1,4 @@
-const pool = require("./connection");
+const pool = require('./connection');
 
 class DB {
   constructor() {}
@@ -15,7 +15,9 @@ class DB {
 
   // TODO- Create a query to Find all employees, join with roles and departments to display their roles, salaries, departments, and managers
   findAllEmployees() {
-    return this.query();
+    const employeeQueary =
+    "SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS Department, CONCAT(manager.first_name, ' ',manager.last_name ) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN employee manager on manager.id = employee.manager_id LEFT JOIN department on role.department_id = department.id";
+       return this.query(employeeQueary);
   }
 
   // TODO- Create a query to Find all employees except the given employee id
@@ -35,10 +37,17 @@ class DB {
   // BONUS- Create a query to Remove a role from the db
 
   // TODO- Create a query to Find all departments
-
+  findAllDepartments() {
+    const departmentQueary =
+    "SELECT department.name AS Department, LEFT JOIN department on role.department_id = department.id";
+       return this.query(departmentQueary);
+  }
   // BONUS- Create a query to Find all departments, join with employees and roles and sum up utilized department budget
 
   // TODO- Create a query to Create a new department
+  createDepartment(department) {
+    return this.query(`INSERT INTO department (name) VALUES ('${department}')`);
+  }
 
   // BONUS- Create a query to Remove a department
 
