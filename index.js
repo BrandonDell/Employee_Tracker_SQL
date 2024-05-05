@@ -151,9 +151,36 @@ function viewEmployees() {
 }
 
 // TODO- Create a function to Update an employee's role-44
-function updateEmployeeRole() {}
+function updateEmployeeRole() {
+  db.findAllEmployees().then(({ rows }) => {
+    const employees = rows.map(({ id, first_name, last_name }) =>
+      name: `{first_name} ${last_name}`,
+      value: id
+    )
+  })
+  db.findAllRoles().then(({ rows }) => {
+    const roles = rows.map(({ id, title }) => ({
+      name: `${title}`,
+      value: id
+    }))
+  })
+  prompt([
+    {
+      type: 'list',
+      name: 'update',
+      message: "Which employee's role do you want to update?",
+      choice: employees
+    },
+    {
+      type: 'list',
+      name: 'role',
+      message: "Which new role would you like to select?",
+      choice: roles
+    },
+  ])
+}
 
-// TODO- Create a function to View all roles-52
+// TODO- Done/Working-Create a function to View all roles-52
 function viewRoles() {
   console.log('hello');
   db.findAllRoles()
@@ -166,41 +193,62 @@ function viewRoles() {
 }
 // TODO- Create a function to Add a role-56
 function addRole() {
-  prompt([ 
-    {
-    type: 'input',
-    name: 'title',
-    message: 'What is the title of the new role?',
-    },
-    {
-    type: 'input',
-    name: 'salary',
-    message: 'What is the salary of the new role?',
-    },
-    {
-    type: 'list',
-    name: 'deparment_id',
-    message: 'What is the department for the new role?',
-    choices: 
-    },
-  ]).then((answer) => {
-    const newRole = {
-      title: answers.title,
-      salary: answers.salary,
-      department_id: answers.department_id
-    };
-    db.createRole(newRole)
-      .then(() => {
-        console.log('Role Added!!!');
-        loadMainPrompts();
-      })
-      .catch((error) => {
-        console.error('Error adding role:', error);
-        loadMainPrompts();
-      });
-  });
+  db.findAllDepartments()
+    .then((departments) => {
+      const departmentChoices = departments.map((department) => ({
+        name: department.name,
+        value: department.id,
+      }));
+      db.findAllRoles()
+        .then((rows) => {
+          const roles = rows.map(({ id, title }) => ({
+            name: title,
+            value: id,
+          }));
+          prompt([
+            {
+              type: 'input',
+              name: 'title',
+              message: 'What is the title of the new role?',
+            },
+            {
+              type: 'input',
+              name: 'salary',
+              message: 'What is the salary of the new role?',
+            },
+            {
+              type: 'list',
+              name: 'departmentId',
+              message: 'Select the department for the new role:',
+              choices: departmentChoices,
+            },
+          ]).then((roleAnswers) => {
+            const newRole = {
+              title: roleAnswers.title,
+              salary: roleAnswers.salary,
+              department_id: roleAnswers.departmentId,
+            };
+            db.createRole(newRole)
+              .then(() => {
+                console.log('Role Added!!!');
+                loadMainPrompts();
+              })
+              .catch((error) => {
+                console.error('Error adding role:', error);
+                loadMainPrompts();
+              });
+          });
+        })
+        .catch((error) => {
+          console.error('Error fetching roles:', error);
+          loadMainPrompts();
+        });
+    })
+    .catch((error) => {
+      console.error('Error fetching departments:', error);
+      loadMainPrompts();
+    });
 }
-
 // TODO- Create a function to View all deparments-64
 function viewDepartments() {
   console.log('hello');
@@ -230,8 +278,59 @@ function addDepartment() {
   });
 }
 // TODO- Create a function to Add an employee-36
-function addEmployee() {}
-
+function addEmployee() {
+  db.findAllRoles().then(({ rows }) => {
+    const roleChoices = roles.map(({ id, title }) => ({
+      name: title,
+      value: id,
+    }));
+    db.findAllEmployees().then(({ rows: employees }) => {
+      const managersChoices = employees.map(
+        ({ id, first_name, last_name }) => ({
+          name: `${first_name} ${last_name}`,
+          value: id,
+        })
+      );
+      prompt([
+        {
+          type: 'input',
+          name: 'first_name',
+          message: 'Enter employee first name:',
+        },
+        {
+          type: 'input',
+          name: 'last_name',
+          message: 'Enter employee last name:',
+        },
+        {
+          type: 'list',
+          name: 'role_id',
+          message: 'Select employee role:',
+          choice: roleChoices,
+        },
+        {
+          type: 'list',
+          name: 'manaager_id',
+          message: 'Select employee manager:',
+          choice: managerChoices,
+        },
+      ]).then((answers) => {
+        db.addEmployee(
+          answers.first_name,
+          answers.last_name,
+          answers.role_id,
+          answers.managee_id
+        )
+          .then(() => {
+            console.log('Employee added successfully!');
+          })
+          .catch((err) => {
+            console.error('Error adding employee:', err);
+          });
+      });
+    });
+  });
+}
 // Exit the application
 function quit() {
   console.log('Goodbye!');
