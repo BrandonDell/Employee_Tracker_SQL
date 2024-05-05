@@ -155,10 +155,51 @@ function updateEmployeeRole() {}
 
 // TODO- Create a function to View all roles-52
 function viewRoles() {
-
+  console.log('hello');
+  db.findAllRoles()
+    .then((data) => {
+      console.table(data.rows);
+    })
+    .then(() => {
+      loadMainPrompts();
+    });
 }
 // TODO- Create a function to Add a role-56
-function addRole() {}
+function addRole() {
+  prompt([ 
+    {
+    type: 'input',
+    name: 'title',
+    message: 'What is the title of the new role?',
+    },
+    {
+    type: 'input',
+    name: 'salary',
+    message: 'What is the salary of the new role?',
+    },
+    {
+    type: 'list',
+    name: 'deparment_id',
+    message: 'What is the department for the new role?',
+    choices: 
+    },
+  ]).then((answer) => {
+    const newRole = {
+      title: answers.title,
+      salary: answers.salary,
+      department_id: answers.department_id
+    };
+    db.createRole(newRole)
+      .then(() => {
+        console.log('Role Added!!!');
+        loadMainPrompts();
+      })
+      .catch((error) => {
+        console.error('Error adding role:', error);
+        loadMainPrompts();
+      });
+  });
+}
 
 // TODO- Create a function to View all deparments-64
 function viewDepartments() {
