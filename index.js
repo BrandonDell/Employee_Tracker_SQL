@@ -151,34 +151,44 @@ function viewEmployees() {
 }
 
 // TODO- Create a function to Update an employee's role-44
-// function updateEmployeeRole() {
-//   db.findAllEmployees().then(({ rows }) => {
-//     const employees = rows.map(({ id, first_name, last_name }) =>
-//       name: `{first_name} ${last_name}`,
-//       value: id
-//     )
-//   })
-//   db.findAllRoles().then(({ rows }) => {
-//     const roles = rows.map(({ id, title }) => ({
-//       name: `${title}`,
-//       value: id
-//     }))
-//   })
-//   prompt([
-//     {
-//       type: 'list',
-//       name: 'update',
-//       message: "Which employee's role do you want to update?",
-//       choice: employees
-//     },
-//     {
-//       type: 'list',
-//       name: 'role',
-//       message: "Which new role would you like to select?",
-//       choice: roles
-//     },
-//   ])
-// }
+function updateEmployeeRole() {
+  db.findAllEmployees().then(({ rows }) => {
+    const employees = rows.map(({ id, first_name, last_name }) => ({
+      name: `${first_name} ${last_name}`,
+      value: id
+    })
+    )
+    db.findAllRoles().then(({ rows }) => {
+      const roles = rows.map(({ id, title }) => ({
+        name: `${title}`,
+        value: id
+      }))
+      prompt([
+        {
+          type: 'list',
+          name: 'update',
+          message: "Which employee's role do you want to update?",
+          choices: employees
+        },
+        {
+          type: 'list',
+          name: 'role',
+          message: "Which new role would you like to select?",
+          choices: roles
+        },
+      ])
+        .then((res) => {
+          console.log(res);
+          db.updateEmployeeRole(res.update, res.role) 
+          .then(() => {
+            console.log('Role Added!!!');
+            loadMainPrompts();
+          })
+          console.log(updateEmployeeRole);
+      })
+    })
+  })
+}
 
 // TODO- Done/Working-Create a function to View all roles-52
 function viewRoles() {
@@ -193,12 +203,13 @@ function viewRoles() {
 }
 // TODO- Create a function to Add a role-56
 function addRole() {
-  db.findAllDepartments().then((rows) => {
+  db.findAllDepartments().then(({ rows }) => {
+    console.log(rows);
     const departmentChoices = rows.map(({ id, name }) => ({
         name: name,
         value: id,
       }));
-      db.findAllRoles().then((rows) => {
+    db.findAllRoles().then(({ rows }) => {
           const roleChoices = rows.map(({ id, title }) => ({
             name: title,
             value: id,
@@ -283,7 +294,6 @@ function addEmployee() {
     }));
     console.log(roleChoices);
     db.findAllEmployees().then(({ rows }) => {
-      console.log(rows);
       const managerChoices = rows.map(({ id, first_name, last_name }) => ({
         name: `${first_name} ${last_name}`,
         value: id,

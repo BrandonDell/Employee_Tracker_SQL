@@ -25,11 +25,12 @@ class DB {
     return this.query(`INSERT INTO employee (first_name, Last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)`, [employee.first_name, employee.last_name, employee.role_id, employee.manager_id]);
   }
   // TODO- Create a query to Update the given employee's role
-  // updateEmployeeRole(update, role) {
-  //   return this.query(
-  //     "UPDATE role SET title = 1 WHERE ID =2"[update, role]
-  //   )
-  // }
+  updateEmployeeRole(update, role) {
+    console.log(update, role);
+    return this.query(
+      "UPDATE employee SET role_id = $1 WHERE id = $2", [role, update]
+    )
+  }
 
   // TODO- Done-Create a query to Find all roles, join with departments to display the department name
   findAllRoles() {
