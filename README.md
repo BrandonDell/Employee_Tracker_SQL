@@ -36,8 +36,7 @@ Google Drive Linke:https://drive.google.com/file/d/1w4xh6geB11fe4xxZ6DMuoYUKQ6kc
 If you have any further questions please feel free to email me at bdellcioppia@gmail.com
 
 ## Image
-![DellCioppia](./images/Render%20Success.png)
-![DellCioppia](./images/Rendered%20Site.png)
+![DellCioppia](./Assets/Employee%20Tracker.png)
 ## Credits
 -UCF Coding Bootcamp
 -Tutor Chris assisted debuging and help with deploying Tuesday 5/7/24
